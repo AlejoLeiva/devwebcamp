@@ -148,12 +148,24 @@ class ActiveRecord
         return $resultado;
     }
 
-    // Busqueda Where con Columna 
+    // Busqueda Where con Columna
     public static function where($columna, $valor)
     {
         $query = "SELECT * FROM " . static::$tabla . " WHERE ${columna} = '${valor}'";
         $resultado = self::consultarSQL($query);
         return array_shift($resultado);
+    }
+
+    // Busqueda Where con multiples opcioes 
+    public static function whereArray($array = []) {
+        $query = "SELECT * FROM " . static::$tabla  ." WHERE";
+        $and = '';
+        foreach($array as $key => $value){
+            $query .= $and . " {$key}='{$value}'";
+            $and = " AND";
+        }
+        $resultado = self::consultarSQL($query);
+        return $resultado;
     }
 
     //Traer un total de registros de la DB 
