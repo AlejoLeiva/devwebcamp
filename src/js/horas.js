@@ -32,16 +32,36 @@
             const resultado = await fetch(url);
             const eventos = await resultado.json();
 
-            obtenerHorasDisponibles();
+            obtenerHorasDisponibles(eventos);
         }
 
-        function obtenerHorasDisponibles() {  
-            const horasDisponibles = document.querySelectorAll('#horas li');
+        function obtenerHorasDisponibles(eventos) {  
+            // Comprobar eventos ya tomados y quitar la clase de deshabilitado
+            const horasTomadas = eventos.map(evento => evento.hora_id);
+
+            const listadoHoras = document.querySelectorAll('#horas li');
+            const listadoHorasArray = Array.from(listadoHoras);
+
+            const resultado = listadoHorasArray.filter(li => !horasTomadas.includes(li.dataset.horaId));
+
+            resultado.forEach(li => li.classList.remove('horas__hora--deshabilitada'));
+
+            const horasDisponibles = document.querySelectorAll('#horas li:not(.horas__hora--deshabilitada');
             horasDisponibles.forEach(hora => hora.addEventListener('click', seleccionarHora));
         }
 
         function seleccionarHora(e) {  
-            inputHiddenHora.value = e.target.dataset.horaId
+
+        // Deshabilitar la hora previa si hay un nuevo click
+        const horaPrevia = document.querySelector('.horas__hora--seleccionada');
+        if(horaPrevia) {
+            horaPrevia.classList.remove('horas__hora--seleccionada');
+         }
+
+        //Agregar clase de seleccionado
+        e.target.classList.add('horas__hora--seleccionada');
+        
+        inputHiddenHora.value = e.target.dataset.horaId;
         
         }
         
